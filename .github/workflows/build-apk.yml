@@ -11,13 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. wat2wasm इंस्टॉल करें (WebAssembly Binary Toolkit से)
       - name: Setup WABT
         run: |
           sudo apt-get update
           sudo apt-get install -y wabt
 
-      # 2. सभी .wat फ़ाइलों को .wasm में कंपाइल करें
       - name: Compile WAT to WASM
         run: |
           for watfile in $(find app/src/main/assets -name "*.wat"); do
@@ -26,11 +24,9 @@ jobs:
             echo "Compiled $watfile -> $wasmfile"
           done
 
-      # 3. Kotlin प्रोजेक्ट बिल्ड करें (पहले से मौजूद)
       - name: Build APK
         run: ./gradlew assembleRelease
 
-      # 4. APK अपलोड करें
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
