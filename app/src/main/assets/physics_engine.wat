@@ -1,10 +1,13 @@
 (module
   (memory 1)
+  ;; जिन्हें बदलना नहीं है — immutable
   (global $mass f64 (f64.const 2.0))
   (global $pos_x f64 (f64.const 0.0))
-  (global $pos_y f64 (f64.const 10.0))
   (global $vel_x f64 (f64.const 5.0))
-  (global $vel_y f64 (f64.const 0.0))
+
+  ;; जिन्हें बदलना है — mutable (mut जोड़ा गया)
+  (global $pos_y (mut f64) (f64.const 10.0))
+  (global $vel_y (mut f64) (f64.const 0.0))
 
   (func $step (param $dt f64)
     (local $force_y f64)
@@ -39,7 +42,7 @@
     f64.add
     global.set $pos_y
 
-    ;; टकराव
+    ;; टकराव (ज़मीन से)
     global.get $pos_y
     f64.const 0.0
     f64.le
