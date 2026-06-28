@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>टोकनाइज़र परीक्षण</title></head>
+<body>
+  <textarea id="code" rows="5" cols="50">वस्तु "गेंद" : द्रव्यमान = 2</textarea>
+  <button onclick="run()">टोकन निकालो</button>
+  <pre id="output"></pre>
+  
+  <script>
+    async function run() {
+      const response = await fetch('aadesh_tokenizer.wasm');
+      const bytes = await response.arrayBuffer();
+      const wasm = await WebAssembly.instantiate(bytes);
+      const { memory, next_token } = wasm.instance.exports;
+      
+      // इनपुट स्ट्रिंग को मेमोरी में लिखें
+      const str = document.getElementById('code').value;
+      const encoder = new TextEncoder();
+      const encoded = encoder.encode(str);
+      const inputPtr = 0;
+      const mem = new Uint8Array(memory.buffer);
+      mem.set(encoded, inputPtr);
+      
+      // ग्लोबल सेट करें (यहाँ हम सीधे ग्लोबल नहीं बदल सकते, 
+      // पर हम मान लेते हैं कि मॉड्यूल के अंदर हमने input_ptr और input_len 
+      // को सेट करने का एक फंक्शन दे दिया है — फिलहाल हम मैन्युअली मेमोरी में 
+      // लिख रहे हैं और मॉड्यूल को मानकर चल रहे हैं)
+      // यह सिर्फ डेमो है — असल में हमें एक init फंक्शन जोड़ना होगा।
+    }
+  </script>
+</body>
+  </html>
